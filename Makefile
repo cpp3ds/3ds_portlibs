@@ -63,8 +63,8 @@ LIBVORBIS_SRC        := $(LIBVORBIS_VERSION).tar.xz
 export PORTLIBS        := $(DEVKITPRO)/portlibs/armv6k
 export PATH            := $(DEVKITARM)/bin:$(PATH)
 export PKG_CONFIG_PATH := $(PORTLIBS)/lib/pkgconfig
-export CFLAGS          := -march=armv6k -mtune=mpcore -mfloat-abi=hard -O3 \
-                          -mword-relocations -fomit-frame-pointer -ffast-math
+export CFLAGS          := -march=armv6k -mtune=mpcore -mfloat-abi=hard -O2 \
+                          -mword-relocations -ffunction-sections -fdata-sections
 export CPPFLAGS        := -I$(PORTLIBS)/include
 export LDFLAGS         := -L$(PORTLIBS)/lib
 
@@ -214,7 +214,7 @@ install:
 	@[ ! -d $(PHYSFS_VERSION) ] || $(MAKE) -C $(PHYSFS_VERSION) install
 	@[ ! -d $(LIBMAD_VERSION) ] || $(MAKE) -C $(LIBMAD_VERSION) install
 	@[ ! -d $(LIBOGG_VERSION) ] || $(MAKE) -C $(LIBOGG_VERSION) install
-	@[ ! -d $(LIBVORBIS_VERSION) ] || $(MAKE) -C $(LIBVORBIS_VERSION)/lib install-libLTLIBRARIES install-data
+	@[ ! -d $(LIBVORBIS_VERSION) ] || $(MAKE) -C $(LIBVORBIS_VERSION) install
 
 clean:
 	@$(RM) -r $(FREETYPE_VERSION)
