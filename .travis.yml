@@ -1,0 +1,44 @@
+os:
+  - linux
+
+language: cpp
+
+sudo: false
+
+script:
+  - export CC=arm-none-eabi-gcc
+  - export CXX=arm-none-eabi-g++
+  - export DEVKITPRO=${HOME}/devkitPro
+  - export DEVKITARM=${DEVKITPRO}/devkitARM
+  - export PORTLIBS=${DEVKITPRO}/portlibs/armv6k
+  - wget http://download.savannah.gnu.org/releases/freetype/freetype-2.5.4.tar.bz2
+  - wget http://sourceforge.net/projects/libjpeg-turbo/files/1.3.1/libjpeg-turbo-1.3.1.tar.gz
+  - wget http://prdownloads.sourceforge.net/libpng/libpng-1.6.15.tar.xz
+  - wget http://prdownloads.sourceforge.net/libpng/zlib-1.2.8.tar.gz
+  - wget http://downloads.xiph.org/releases/ogg/libogg-1.3.2.tar.xz
+  - wget http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.5.tar.xz
+  - wget http://sourceforge.net/projects/devkitpro/files/Automated%20Installer/devkitARMupdate.pl
+  - perl devkitARMupdate.pl
+  - make zlib
+  - make install-zlib
+  - make libogg
+  - make install # Need to install libogg for libvorbis
+  - make freetype
+  - make libpng
+  - make libjpeg-turbo
+  - make libvorbis
+  - make install
+
+before_deploy:
+  - export RELEASE_FILENAME=portlibs-3ds-$TRAVIS_TAG.tar.xz
+  - tar -cJvf $RELEASE_FILENAME $PORTLIBS
+
+deploy:
+  provider: releases
+  api_key:
+    secure: GOt8K0AsSbKPu92EFxTep+wZQEqgrIhTRoYiSMgoBU+v3BleyqZN45Cs5Xt/zIFPqDMAiv96q4DhWvJ+nIy3f2JABk70WoUDspiT2+SsGaVRS7AqaDtj6ovni0M2shl3TJNUxA3JM205cc+HoxPh7FyzjIQQcSL/9BLl46GePIYOe/V2Fg8uo/2LI9MuUT8HBRMgPg6KIOlrLsUsMwOM+6bxBAnWhiQBlCjpRf7qXaDWjNUwFJu11YBVVihJoMvIH8fMPXv2FwK+ZPC51NbS1JgQKFvnXZQ9bSeAGUVNGFS3A1kAcnQ+OoCSiv15bhcQtAWqOQliAvqEdN0zQrtrIWtZkAQmrtXFhr0f5ZY7ONGEB2r8hWRj88y8w9pfQ4RghnXwfYQWQmp1oLNn1N8IwojmitKaDlWTVVaTh54VcnWcbzjj3IpeDavXK55c+RVsnMFQ/91gqe5JjfoBy4Nl1QU06IG7BnbfVBotI5LkOqhzqhj4SaP7khoWqW/AnQRPEIYrfFdkOJsNMDnp9BGlAIAM/S649pZn2qMn5LNElQ3JTqiDFQ346ojr2wN9blqtDA7/3803e9tYQiixRnevhmkjClwEJn8RvJqouEtdDUIzYCERft2JBeze2g251A0hladMiLWgC7A+6RvgIQg0b9Hr+hN750WYKyZ28JYasc0=
+  file: $RELEASE_FILENAME
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: cpp3ds/3ds_portlibs
