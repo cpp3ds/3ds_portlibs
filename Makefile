@@ -58,7 +58,9 @@ LIBVORBIS            := libvorbis
 LIBVORBIS_VERSION    := $(LIBVORBIS)-1.3.5
 LIBVORBIS_SRC        := $(LIBVORBIS_VERSION).tar.xz
 
-
+GIFLIB               := giflib
+GIFLIB_VERSION   	 := $(GIFLIB)-5.1.1
+GIFLIB_SRC     		 := $(GIFLIB_VERSION).tar.bz2
 
 export PORTLIBS        := $(DEVKITPRO)/portlibs/armv6k
 export PATH            := $(DEVKITARM)/bin:$(PATH)
@@ -83,7 +85,8 @@ export LDFLAGS         := -L$(PORTLIBS)/lib
 	$(PHYSFS) \
 	$(LIBMAD) \
 	$(LIBOGG) \
-	$(LIBVORBIS)
+	$(LIBVORBIS) \
+	$(GIFLIB)
 
 all:
 	@echo "Please choose one of the following targets:"
@@ -102,6 +105,7 @@ all:
 	@echo "  $(LIBMAD)"
 	@echo "  $(LIBOGG)"
 	@echo "  $(LIBVORBIS) (requires libogg to be installed)"
+	@echo "  $(GIFLIB)"
 
 $(FREETYPE): $(FREETYPE_SRC)
 	@[ -d $(FREETYPE_VERSION) ] || tar -xaf $<
@@ -190,13 +194,19 @@ $(LIBOGG): $(LIBOGG_SRC)
 	@cd $(LIBOGG_VERSION) && \
 	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static
 	@$(MAKE) -C $(LIBOGG_VERSION)
-
+	
 $(LIBVORBIS): $(LIBVORBIS_SRC)
 	@[ -d $(LIBVORBIS_VERSION) ] || tar -xaf $<
 	@cd $(LIBVORBIS_VERSION) && \
 	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static
 	@$(MAKE) -C $(LIBVORBIS_VERSION)
 
+$(GIFLIB): $(GIFLIB_SRC)
+	@[ -d $(GIFLIB_VERSION) ] || tar -xaf $<
+	@cd $(GIFLIB_VERSION) && \
+	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static
+	@$(MAKE) -C $(GIFLIB_VERSION)
+	
 install-zlib: 
 	@$(MAKE) -C $(ZLIB_VERSION) install
 
@@ -215,6 +225,7 @@ install:
 	@[ ! -d $(LIBMAD_VERSION) ] || $(MAKE) -C $(LIBMAD_VERSION) install
 	@[ ! -d $(LIBOGG_VERSION) ] || $(MAKE) -C $(LIBOGG_VERSION) install
 	@[ ! -d $(LIBVORBIS_VERSION) ] || $(MAKE) -C $(LIBVORBIS_VERSION) install
+	@[ ! -d $(GIFLIB_VERSION) ] || $(MAKE) -C $(GIFLIB_VERSION) install
 
 clean:
 	@$(RM) -r $(FREETYPE_VERSION)
@@ -232,3 +243,4 @@ clean:
 	@$(RM) -r $(LIBMAD_VERSION)
 	@$(RM) -r $(LIBOGG_VERSION)
 	@$(RM) -r $(LIBVORBIS_VERSION)
+	@$(RM) -r $(GIFLIB_VERSION)

@@ -29,11 +29,12 @@ Currently supports the following portlibs:
 * libmad
 * libogg
 * libvorbis
+* giflib
 
 Download links:
 
 * [freetype-2.5.4.tar.bz2] (http://download.savannah.gnu.org/releases/freetype/freetype-2.5.4.tar.bz2)
-*  [libexif-0.6.21.tar.bz2] (http://sourceforge.net/projects/libexif/files/libexif/0.6.21/libexif-0.6.21.tar.bz2/download)
+* [libexif-0.6.21.tar.bz2] (http://sourceforge.net/projects/libexif/files/libexif/0.6.21/libexif-0.6.21.tar.bz2/download)
 * [libjpeg-turbo-1.3.1.tar.gz] (http://sourceforge.net/projects/libjpeg-turbo/files/1.3.1/libjpeg-turbo-1.3.1.tar.gz/download)
 * [libpng-1.6.15.tar.xz] (http://prdownloads.sourceforge.net/libpng/libpng-1.6.15.tar.xz?download)
 * [sqlite-autoconf-3080704.tar.gz] (http://www.sqlite.org/2014/sqlite-autoconf-3080704.tar.gz)
@@ -46,3 +47,4 @@ Download links:
 * [libmad-0.15.1b.tar.gz] (http://sourceforge.net/projects/mad/files/libmad/0.15.1b/libmad-0.15.1b.tar.gz/download)
 * [libogg-1.3.2.tar.xz] (http://downloads.xiph.org/releases/ogg/libogg-1.3.2.tar.xz)
 * [libvorbis-1.3.5.tar.xz] (http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.5.tar.xz)
+* [giflib-5.1.1.tar.bz2] (http://sourceforge.net/projects/giflib/files/giflib-5.1.1.tar.bz2/download)
