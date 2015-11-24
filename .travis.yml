@@ -24,7 +24,6 @@ script:
   - make libjpeg-turbo
   - make mxml
   - make expat
-  - make libxml2
   - make jansson
   - make libmad
   - make libvorbis

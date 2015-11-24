@@ -88,6 +88,11 @@ BZIP2_VERSION        := $(BZIP2)-1.0.6
 BZIP2_SRC            := $(BZIP2_VERSION).tar.gz
 BZIP2_DOWNLOAD       := "http://www.bzip.org/1.0.6/bzip2-1.0.6.tar.gz"
 
+XZ                   := xz
+XZ_VERSION           := $(XZ)-5.2.2
+XZ_SRC               := $(XZ_VERSION).tar.xz
+XZ_DOWNLOAD          := "http://tukaani.org/xz/xz-5.2.2.tar.xz"
+
 export PORTLIBS        := $(DEVKITPRO)/portlibs/3ds
 export PATH            := $(DEVKITARM)/bin:$(PATH)
 export PKG_CONFIG_PATH := $(PORTLIBS)/lib/pkgconfig
@@ -114,7 +119,8 @@ export LDFLAGS         := -L$(PORTLIBS)/lib
 	$(LIBVORBIS) \
 	$(GIFLIB) \
 	$(LIBCONFIG) \
-	$(BZIP2)
+	$(BZIP2) \
+	$(XZ)
 
 all:
 	@echo "Please choose one of the following targets:"
@@ -136,6 +142,7 @@ all:
 	@echo "  $(GIFLIB)"
 	@echo "  $(LIBCONFIG)"
 	@echo "  $(BZIP2)"
+	@echo "  $(XZ)"
 
 $(FREETYPE): $(FREETYPE_SRC)
 	@[ -d $(FREETYPE_VERSION) ] || tar -xaf $<
@@ -190,7 +197,7 @@ $(EXPAT): $(EXPAT_SRC)
 $(LIBXML2): $(LIBXML2_SRC)
 	@[ -d $(LIBXML2_VERSION) ] || tar -xaf $<
 	@cd $(LIBXML2_VERSION) && \
-	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static
+	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static --without-http --without-ftp --without-threads
 	@$(MAKE) -C $(LIBXML2_VERSION) libxml2.la
 
 $(OPENAL): $(OPENAL_SRC)
@@ -249,6 +256,12 @@ $(BZIP2): $(BZIP2_SRC)
 	@cd $(BZIP2_VERSION)
 	@$(MAKE) -C $(BZIP2_VERSION) CC=arm-none-eabi-gcc AR=arm-none-eabi-ar RANLIB=arm-none-eabi-ranlib CPPFLAGS="$(CPPFLAGS)" CFLAGS="-D_FILE_OFFSET_BITS=64 -Winline $(CFLAGS)" libbz2.a
 
+$(XZ): $(XZ_SRC)
+	@[ -d $(XZ_VERSION) ] || tar -xaf $<
+	@cd $(XZ_VERSION) && \
+	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static --disable-xz
+	@$(MAKE) -C $(XZ_VERSION)
+
 # Downloads
 $(LIBCONFIG_SRC):
 	wget -O $@ $(LIBCONFIG_DOWNLOAD)
@@ -286,6 +299,8 @@ $(GIFLIB_SRC):
 	wget -O $@ $(GIFLIB_DOWNLOAD)
 $(BZIP2_SRC):
 	wget -O $@ $(BZIP2_DOWNLOAD)
+$(XZ_SRC):
+	wget -O $@ $(XZ_DOWNLOAD)
 
 install-zlib: 
 	@$(MAKE) -C $(ZLIB_VERSION) install
@@ -308,6 +323,7 @@ install:
 	@[ ! -d $(GIFLIB_VERSION) ] || $(MAKE) -C $(GIFLIB_VERSION) install
 	@[ ! -d $(LIBCONFIG_VERSION) ] || $(MAKE) -C $(LIBCONFIG_VERSION) install
 	@[ ! -d $(BZIP2_VERSION) ] || $(MAKE) -C $(BZIP2_VERSION) PREFIX="$(PORTLIBS)" install
+	@[ ! -d $(XZ_VERSION) ] || $(MAKE) -C $(XZ_VERSION) install
 
 clean:
 	@$(RM) -r $(FREETYPE_VERSION)
@@ -328,3 +344,4 @@ clean:
 	@$(RM) -r $(GIFLIB_VERSION)
 	@$(RM) -r $(LIBCONFIG_VERSION)
 	@$(RM) -r $(BZIP2_VERSION)
+	@$(RM) -r $(XZ_VERSION)
