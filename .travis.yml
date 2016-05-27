@@ -1,45 +1,36 @@
 os:
-  - linux
-
+- linux
 language: cpp
-
 sudo: false
 
 script:
-  - export CC=arm-none-eabi-gcc
-  - export CXX=arm-none-eabi-g++
-  - export DEVKITPRO=${HOME}/devkitPro
-  - export DEVKITARM=${DEVKITPRO}/devkitARM
-  - export PORTLIBS=${DEVKITPRO}/portlibs/3ds
-  - wget http://sourceforge.net/projects/devkitpro/files/Automated%20Installer/devkitARMupdate.pl
-  - perl devkitARMupdate.pl
-  - make zlib
-  - make install-zlib
-  - make libogg
-  - make install # Need to install libogg for libvorbis
-  - make freetype
-  - make libexif
-  - make sqlite
-  - make libpng
-  - make libjpeg-turbo
-  - make mxml
-  - make expat
-  - make jansson
-  - make libmad
-  - make libvorbis
-  - make giflib
-  - make libconfig
-  - make bzip2
-  - make install
+- export CC=arm-none-eabi-gcc
+- export CXX=arm-none-eabi-g++
+- export DEVKITPRO=${HOME}/devkitPro
+- export DEVKITARM=${DEVKITPRO}/devkitARM
+- export PORTLIBS=${DEVKITPRO}/portlibs/3ds
+- wget http://sourceforge.net/projects/devkitpro/files/Automated%20Installer/devkitARMupdate.pl
+- perl devkitARMupdate.pl
+- make zlib
+- make install-zlib
+- make libogg
+- make install
+- make freetype
+- make libpng
+- make libjpeg-turbo
+- make libmad
+- make libvorbis
+- make install
 
 before_deploy:
   - export RELEASE_FILENAME=portlibs-3ds-$TRAVIS_TAG.tar.xz
-  - tar -cJvf $RELEASE_FILENAME $PORTLIBS
+  - cd $DEVKITPRO
+  - tar -cJvf $RELEASE_FILENAME portlibs
 
 deploy:
   provider: releases
   api_key:
-    secure: GOt8K0AsSbKPu92EFxTep+wZQEqgrIhTRoYiSMgoBU+v3BleyqZN45Cs5Xt/zIFPqDMAiv96q4DhWvJ+nIy3f2JABk70WoUDspiT2+SsGaVRS7AqaDtj6ovni0M2shl3TJNUxA3JM205cc+HoxPh7FyzjIQQcSL/9BLl46GePIYOe/V2Fg8uo/2LI9MuUT8HBRMgPg6KIOlrLsUsMwOM+6bxBAnWhiQBlCjpRf7qXaDWjNUwFJu11YBVVihJoMvIH8fMPXv2FwK+ZPC51NbS1JgQKFvnXZQ9bSeAGUVNGFS3A1kAcnQ+OoCSiv15bhcQtAWqOQliAvqEdN0zQrtrIWtZkAQmrtXFhr0f5ZY7ONGEB2r8hWRj88y8w9pfQ4RghnXwfYQWQmp1oLNn1N8IwojmitKaDlWTVVaTh54VcnWcbzjj3IpeDavXK55c+RVsnMFQ/91gqe5JjfoBy4Nl1QU06IG7BnbfVBotI5LkOqhzqhj4SaP7khoWqW/AnQRPEIYrfFdkOJsNMDnp9BGlAIAM/S649pZn2qMn5LNElQ3JTqiDFQ346ojr2wN9blqtDA7/3803e9tYQiixRnevhmkjClwEJn8RvJqouEtdDUIzYCERft2JBeze2g251A0hladMiLWgC7A+6RvgIQg0b9Hr+hN750WYKyZ28JYasc0=
+    secure: kCh4BvH+qj4FIiUQ9ELoH3FiXY3kImP7x9Dq8YN6cwA8qciiC1Sw0idCmGAvC1KPGTy4Q/ZxACKqxtqoxULVBP34uqei4600XLafcYJcL2lY+gfNjCTP4cmHWBmo/+3kkr7ZMBtzIud+gFSN9MGK3vPcjy4DaLSMC83lp0nx10BbruXukLh/mq4pKfzyjbsDYH1vASd6dPEJdXiP7+JDq90hChxFgJeGxOIVNr2cOa/MYB2z+F12UAtwlfyZ8FS7bXopEq0aVn5r5BkNFQ0wMO2JXwfQOvohbwVz1m3vqYOLRK1INzQ7ywwLfCsVI+aPhjjs6VYPIiwzZx9XaTnv5glhWScoIAjnvHMmtcOcQjj5FDy9IinaGEdCHNbIx6VDgdP5704J7v9u+aeKhzp29RrmxxjIz/ULRlhpkCyiMKVsaybHZvSrlVh5qj0hVTIcitb/NpxDFw6s00wqXagOIR6rhPSuOVYZg0bAqC2vFDSJnLW3Wt4gYx6fhwGOCusYzxvTzre8Op8TnWOkipR8uRFn66mBKxfYsYMEHEOdeYsK8gGf1DFBe2r6rC9TDRSNxGMHEj61f4mQmjzSNyBbWXa5T1ezZMQhodCSMPs1ZvSZwG8oHZa/9vJAKFXFsGCGknMPYvD6TLwxJ6VjDxWRUAIcuxUphxlOP8iucIau5to=
   file: $RELEASE_FILENAME
   skip_cleanup: true
   on:
