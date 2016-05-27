@@ -18,18 +18,10 @@ script:
   - make libogg
   - make install # Need to install libogg for libvorbis
   - make freetype
-  - make libexif
-  - make sqlite
   - make libpng
   - make libjpeg-turbo
-  - make mxml
-  - make expat
-  - make jansson
   - make libmad
   - make libvorbis
-  - make giflib
-  - make libconfig
-  - make bzip2
   - make install
 
 before_deploy:
