@@ -1,37 +1,35 @@
 os:
-  - linux
-
+- linux
 language: cpp
-
 sudo: false
 
 script:
-  - export CC=arm-none-eabi-gcc
-  - export CXX=arm-none-eabi-g++
-  - export DEVKITPRO=${HOME}/devkitPro
-  - export DEVKITARM=${DEVKITPRO}/devkitARM
-  - export PORTLIBS=${DEVKITPRO}/portlibs/3ds
-  - wget http://sourceforge.net/projects/devkitpro/files/Automated%20Installer/devkitARMupdate.pl
-  - perl devkitARMupdate.pl
-  - make zlib
-  - make install-zlib
-  - make libogg
-  - make install # Need to install libogg for tremor
-  - make freetype
-  - make libpng
-  - make libjpeg-turbo
-  - make libmad
-  - make tremor
-  - make install
+- export CC=arm-none-eabi-gcc
+- export CXX=arm-none-eabi-g++
+- export DEVKITPRO=${HOME}/devkitPro
+- export DEVKITARM=${DEVKITPRO}/devkitARM
+- export PORTLIBS=${DEVKITPRO}/portlibs/3ds
+- wget https://sourceforge.net/projects/devkitpro/files/devkitARM/devkitARM_r45/devkitARM_r45-x86_64-linux.tar.bz2 -O dka.tar.bz2
+- mkdir $DEVKITPRO && tar -xaf dka.tar.bz2 -C $DEVKITPRO && rm dka.tar.bz2
+- make zlib
+- make install-zlib
+- make libogg
+- make install
+- make freetype
+- make libpng
+- make libjpeg-turbo
+- make libmad
+- make tremor
+- make install
 
 before_deploy:
-  - export RELEASE_FILENAME=portlibs-3ds-$TRAVIS_TAG.tar.xz
-  - tar -cJvf $RELEASE_FILENAME $PORTLIBS
+- export RELEASE_FILENAME=portlibs-3ds-$TRAVIS_TAG.tar.xz
+- tar -cJvf $RELEASE_FILENAME $PORTLIBS
 
 deploy:
   provider: releases
   api_key:
-    secure: GOt8K0AsSbKPu92EFxTep+wZQEqgrIhTRoYiSMgoBU+v3BleyqZN45Cs5Xt/zIFPqDMAiv96q4DhWvJ+nIy3f2JABk70WoUDspiT2+SsGaVRS7AqaDtj6ovni0M2shl3TJNUxA3JM205cc+HoxPh7FyzjIQQcSL/9BLl46GePIYOe/V2Fg8uo/2LI9MuUT8HBRMgPg6KIOlrLsUsMwOM+6bxBAnWhiQBlCjpRf7qXaDWjNUwFJu11YBVVihJoMvIH8fMPXv2FwK+ZPC51NbS1JgQKFvnXZQ9bSeAGUVNGFS3A1kAcnQ+OoCSiv15bhcQtAWqOQliAvqEdN0zQrtrIWtZkAQmrtXFhr0f5ZY7ONGEB2r8hWRj88y8w9pfQ4RghnXwfYQWQmp1oLNn1N8IwojmitKaDlWTVVaTh54VcnWcbzjj3IpeDavXK55c+RVsnMFQ/91gqe5JjfoBy4Nl1QU06IG7BnbfVBotI5LkOqhzqhj4SaP7khoWqW/AnQRPEIYrfFdkOJsNMDnp9BGlAIAM/S649pZn2qMn5LNElQ3JTqiDFQ346ojr2wN9blqtDA7/3803e9tYQiixRnevhmkjClwEJn8RvJqouEtdDUIzYCERft2JBeze2g251A0hladMiLWgC7A+6RvgIQg0b9Hr+hN750WYKyZ28JYasc0=
+    secure: LXwBzJihpC7YjADYySqEb2bdBEpx+uO5qWPX/vjHbHw6aENUc3Kp8MOGhnROmsjpovLaC7FMBkV2eY79q0SCfBuxg0ExnAhwIE9LanGu+4lZKwjQwlLpCmwzom70AOp9hhGKdm2EGlCHTg9T2s9Dvl/wJ9bu1gV8N1wdiNjblS1CFz+6jrjAJlhQ0avkD6lizKjtjKT34wzN+JVi2GV/DkoNikNSZas8KTVUbTRSCv2QqOWJpMFk+OYBeef+7rVSCd3gnHZ2X+wwVLIVsWi3jeJhGIK3kF0GLijjrlgdCF4kXqT6QAkFkWOioIMq/pvpASazVR/qNmkiTjIDURdEyotidIxRBzvPOr/l3wsUUZu/heTJeB2GIlqBQ2PCXmykGhSO0xZQbP/gdC/1+mD9NstXIIS7DnkEYwZyjPc14qSypbCA3PVPyDZT56QSL7DmpZmOO0DfLGfGiC6IssjVI1TQFSzZHPdhqcyYeRTu5HjEhnG/XjYtEkvv0WO/mJWvW6G6mwRlu98fPtinIOnh0UOWbhJQJ164GQolZLct3NQ8EFbD0FFZ8IwLvFUb4ceOzXGeZilAcIxALPWta1/LPdyDVM8+o6uHCpq4YCDM7dDdPHIWyKGRm0ysUoAbVkt4EaQs5ul+SfKNMa+9bKjtnD2ir+QczzCXNmaTWWIRo84=
   file: $RELEASE_FILENAME
   skip_cleanup: true
   on:

@@ -29,13 +29,13 @@ LIBOGG_SRC           := $(LIBOGG_VERSION).tar.xz
 LIBOGG_DOWNLOAD      := "http://downloads.xiph.org/releases/ogg/libogg-1.3.2.tar.xz"
 
 TREMOR                := tremor
-TREMOR_VERSION        := $(TREMOR)-2a1a8f6
+TREMOR_VERSION        := $(TREMOR)-b56ffce
 TREMOR_SRC            := $(TREMOR_VERSION).tar.gz
-TREMOR_DOWNLOAD       := "https://git.xiph.org/?p=tremor.git;a=snapshot;h=2a1a8f621e500fdf0749f115e2206f82919560a3;sf=tgz"
+TREMOR_DOWNLOAD       := "https://git.xiph.org/?p=tremor.git;a=snapshot;h=b56ffce0c0773ec5ca04c466bc00b1bbcaf65aef;sf=tgz"
 
 export PORTLIBS        := $(DEVKITPRO)/portlibs/3ds
-export PATH            := $(DEVKITARM)/bin:$(PATH)
-export PKG_CONFIG_PATH := $(PORTLIBS)/lib/pkgconfig
+export PATH            := $(DEVKITARM)/bin:$(PORTLIBS)/bin:$(PATH)
+export PKG_CONFIG      := $(PWD)/arm-none-eabi-pkg-config
 export CFLAGS          := -march=armv6k -mtune=mpcore -mfloat-abi=hard -O2 \
                           -mword-relocations -ffunction-sections -fdata-sections
 export CPPFLAGS        := -I$(PORTLIBS)/include
@@ -98,9 +98,10 @@ $(LIBOGG): $(LIBOGG_SRC)
 	@$(MAKE) -C $(LIBOGG_VERSION)
 
 $(TREMOR): $(TREMOR_SRC)
-	@[ -d $(TREMOR_VERSION) ] || tar -xzf $<
+	@[ -d $(TREMOR_VERSION) ] || tar -xaf $<
 	@cd $(TREMOR_VERSION) && \
-	 ./autogen.sh --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --disable-oggtest
+	 patch -Np1 -i ../tremor.patch && \
+	 ./autogen.sh --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static --disable-oggtest
 	@$(MAKE) -C $(TREMOR_VERSION)
 
 # Downloads
