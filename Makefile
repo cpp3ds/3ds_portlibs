@@ -28,10 +28,10 @@ LIBOGG_VERSION       := $(LIBOGG)-1.3.2
 LIBOGG_SRC           := $(LIBOGG_VERSION).tar.xz
 LIBOGG_DOWNLOAD      := "http://downloads.xiph.org/releases/ogg/libogg-1.3.2.tar.xz"
 
-LIBVORBIS            := libvorbis
-LIBVORBIS_VERSION    := $(LIBVORBIS)-1.3.5
-LIBVORBIS_SRC        := $(LIBVORBIS_VERSION).tar.xz
-LIBVORBIS_DOWNLOAD   := "http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.5.tar.xz"
+TREMOR                := tremor
+TREMOR_VERSION        := $(TREMOR)-2a1a8f6
+TREMOR_SRC            := $(TREMOR_VERSION).tar.gz
+TREMOR_DOWNLOAD       := "https://git.xiph.org/?p=tremor.git;a=snapshot;h=2a1a8f621e500fdf0749f115e2206f82919560a3;sf=tgz"
 
 export PORTLIBS        := $(DEVKITPRO)/portlibs/3ds
 export PATH            := $(DEVKITARM)/bin:$(PATH)
@@ -48,7 +48,7 @@ export LDFLAGS         := -L$(PORTLIBS)/lib
 	$(ZLIB) \
 	$(LIBMAD) \
 	$(LIBOGG) \
-	$(LIBVORBIS)
+	$(TREMOR)
 
 all:
 	@echo "Please choose one of the following targets:"
@@ -58,7 +58,7 @@ all:
 	@echo "  $(ZLIB)"
 	@echo "  $(LIBMAD)"
 	@echo "  $(LIBOGG)"
-	@echo "  $(LIBVORBIS) (requires libogg to be installed)"
+	@echo "  $(TREMOR) (requires libogg to be installed)"
 
 $(FREETYPE): $(FREETYPE_SRC)
 	@[ -d $(FREETYPE_VERSION) ] || tar -xaf $<
@@ -97,11 +97,11 @@ $(LIBOGG): $(LIBOGG_SRC)
 	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static
 	@$(MAKE) -C $(LIBOGG_VERSION)
 
-$(LIBVORBIS): $(LIBVORBIS_SRC)
-	@[ -d $(LIBVORBIS_VERSION) ] || tar -xaf $<
-	@cd $(LIBVORBIS_VERSION) && \
-	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static
-	@$(MAKE) -C $(LIBVORBIS_VERSION)
+$(TREMOR): $(TREMOR_SRC)
+	@[ -d $(TREMOR_VERSION) ] || tar -xzf $<
+	@cd $(TREMOR_VERSION) && \
+	 ./autogen.sh --prefix=$(PORTLIBS_PATH)/armv6k --host=arm-none-eabi --disable-shared --disable-oggtest
+	@$(MAKE) -C $(TREMOR_VERSION)
 
 # Downloads
 $(ZLIB_SRC):
@@ -116,8 +116,8 @@ $(LIBMAD_SRC):
 	wget -O $@ $(LIBMAD_DOWNLOAD)
 $(LIBOGG_SRC):
 	wget -O $@ $(LIBOGG_DOWNLOAD)
-$(LIBVORBIS_SRC):
-	wget -O $@ $(LIBVORBIS_DOWNLOAD)
+$(TREMOR_SRC):
+	wget -O $@ $(TREMOR_DOWNLOAD)
 
 install-zlib: 
 	@$(MAKE) -C $(ZLIB_VERSION) install
@@ -128,7 +128,7 @@ install:
 	@[ ! -d $(LIBPNG_VERSION) ] || $(MAKE) -C $(LIBPNG_VERSION) install
 	@[ ! -d $(LIBMAD_VERSION) ] || $(MAKE) -C $(LIBMAD_VERSION) install
 	@[ ! -d $(LIBOGG_VERSION) ] || $(MAKE) -C $(LIBOGG_VERSION) install
-	@[ ! -d $(LIBVORBIS_VERSION) ] || $(MAKE) -C $(LIBVORBIS_VERSION) install
+	@[ ! -d $(TREMOR_VERSION) ] || $(MAKE) -C $(TREMOR_VERSION) install
 
 clean:
 	@$(RM) -r $(FREETYPE_VERSION)
@@ -137,4 +137,4 @@ clean:
 	@$(RM) -r $(ZLIB_VERSION)
 	@$(RM) -r $(LIBMAD_VERSION)
 	@$(RM) -r $(LIBOGG_VERSION)
-	@$(RM) -r $(LIBVORBIS_VERSION)
+	@$(RM) -r $(TREMOR_VERSION)

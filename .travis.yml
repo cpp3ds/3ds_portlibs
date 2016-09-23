@@ -16,12 +16,12 @@ script:
   - make zlib
   - make install-zlib
   - make libogg
-  - make install # Need to install libogg for libvorbis
+  - make install # Need to install libogg for tremor
   - make freetype
   - make libpng
   - make libjpeg-turbo
   - make libmad
-  - make libvorbis
+  - make tremor
   - make install
 
 before_deploy:
