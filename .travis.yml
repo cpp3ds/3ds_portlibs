@@ -24,7 +24,8 @@ script:
 
 before_deploy:
 - export RELEASE_FILENAME=portlibs-3ds-$TRAVIS_TAG.tar.xz
-- tar -cJvf $RELEASE_FILENAME $PORTLIBS
+- cd $DEVKITPRO
+- tar -cJvf $RELEASE_FILENAME portlibs
 
 deploy:
   provider: releases
