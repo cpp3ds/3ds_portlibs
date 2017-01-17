@@ -33,6 +33,11 @@ LIBVORBIS_VERSION    := $(LIBVORBIS)-1.3.5
 LIBVORBIS_SRC        := $(LIBVORBIS_VERSION).tar.xz
 LIBVORBIS_DOWNLOAD   := "http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.5.tar.xz"
 
+LIBFAAD2            := faad2
+LIBFAAD2_VERSION    := $(LIBFAAD2)-2.7
+LIBFAAD2_SRC        := $(LIBFAAD2_VERSION).tar.gz
+LIBFAAD2_DOWNLOAD   := "http://downloads.sourceforge.net/faac/faad2-2.7.tar.gz"
+
 export PORTLIBS        := $(DEVKITPRO)/portlibs/3ds
 export PATH            := $(DEVKITARM)/bin:$(PATH)
 export PKG_CONFIG_PATH := $(PORTLIBS)/lib/pkgconfig
@@ -48,7 +53,8 @@ export LDFLAGS         := -L$(PORTLIBS)/lib
 	$(ZLIB) \
 	$(LIBMAD) \
 	$(LIBOGG) \
-	$(LIBVORBIS)
+	$(LIBVORBIS) \
+	$(LIBFAAD2)
 
 all:
 	@echo "Please choose one of the following targets:"
@@ -59,6 +65,7 @@ all:
 	@echo "  $(LIBMAD)"
 	@echo "  $(LIBOGG)"
 	@echo "  $(LIBVORBIS) (requires libogg to be installed)"
+	@echo "  $(LIBFAAD2)"
 
 $(FREETYPE): $(FREETYPE_SRC)
 	@[ -d $(FREETYPE_VERSION) ] || tar -xaf $<
@@ -103,6 +110,12 @@ $(LIBVORBIS): $(LIBVORBIS_SRC)
 	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static
 	@$(MAKE) -C $(LIBVORBIS_VERSION)
 
+$(LIBFAAD2): $(LIBFAAD2_SRC)
+	@[ -d $(LIBFAAD2_VERSION) ] || tar -xaf $<
+	@cd $(LIBFAAD2_VERSION) && \
+	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static
+	@$(MAKE) -C $(LIBFAAD2_VERSION)
+
 # Downloads
 $(ZLIB_SRC):
 	wget -O $@ $(ZLIB_DOWNLOAD)
@@ -118,8 +131,10 @@ $(LIBOGG_SRC):
 	wget -O $@ $(LIBOGG_DOWNLOAD)
 $(LIBVORBIS_SRC):
 	wget -O $@ $(LIBVORBIS_DOWNLOAD)
+$(LIBFAAD2_SRC):
+	wget -O $@ $(LIBFAAD2_DOWNLOAD)
 
-install-zlib: 
+install-zlib:
 	@$(MAKE) -C $(ZLIB_VERSION) install
 
 install:
@@ -129,6 +144,7 @@ install:
 	@[ ! -d $(LIBMAD_VERSION) ] || $(MAKE) -C $(LIBMAD_VERSION) install
 	@[ ! -d $(LIBOGG_VERSION) ] || $(MAKE) -C $(LIBOGG_VERSION) install
 	@[ ! -d $(LIBVORBIS_VERSION) ] || $(MAKE) -C $(LIBVORBIS_VERSION) install
+	@[ ! -d $(LIBFAAD2_VERSION) ] || $(MAKE) -C $(LIBFAAD2_VERSION) install
 
 clean:
 	@$(RM) -r $(FREETYPE_VERSION)
@@ -138,3 +154,4 @@ clean:
 	@$(RM) -r $(LIBMAD_VERSION)
 	@$(RM) -r $(LIBOGG_VERSION)
 	@$(RM) -r $(LIBVORBIS_VERSION)
+	@$(RM) -r $(LIBFAAD2_VERSION)

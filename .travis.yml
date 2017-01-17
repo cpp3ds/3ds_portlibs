@@ -20,17 +20,18 @@ script:
 - make libjpeg-turbo
 - make libmad
 - make libvorbis
+- make faad2
 - make install
 
 before_deploy:
-  - export RELEASE_FILENAME=portlibs-3ds-$TRAVIS_TAG.tar.xz
-  - cd $DEVKITPRO
-  - tar -cJvf $RELEASE_FILENAME portlibs
+- export RELEASE_FILENAME=portlibs-3ds-$TRAVIS_TAG.tar.xz
+- cd $DEVKITPRO
+- tar -cJvf $RELEASE_FILENAME portlibs
 
 deploy:
   provider: releases
   api_key:
-    secure: kCh4BvH+qj4FIiUQ9ELoH3FiXY3kImP7x9Dq8YN6cwA8qciiC1Sw0idCmGAvC1KPGTy4Q/ZxACKqxtqoxULVBP34uqei4600XLafcYJcL2lY+gfNjCTP4cmHWBmo/+3kkr7ZMBtzIud+gFSN9MGK3vPcjy4DaLSMC83lp0nx10BbruXukLh/mq4pKfzyjbsDYH1vASd6dPEJdXiP7+JDq90hChxFgJeGxOIVNr2cOa/MYB2z+F12UAtwlfyZ8FS7bXopEq0aVn5r5BkNFQ0wMO2JXwfQOvohbwVz1m3vqYOLRK1INzQ7ywwLfCsVI+aPhjjs6VYPIiwzZx9XaTnv5glhWScoIAjnvHMmtcOcQjj5FDy9IinaGEdCHNbIx6VDgdP5704J7v9u+aeKhzp29RrmxxjIz/ULRlhpkCyiMKVsaybHZvSrlVh5qj0hVTIcitb/NpxDFw6s00wqXagOIR6rhPSuOVYZg0bAqC2vFDSJnLW3Wt4gYx6fhwGOCusYzxvTzre8Op8TnWOkipR8uRFn66mBKxfYsYMEHEOdeYsK8gGf1DFBe2r6rC9TDRSNxGMHEj61f4mQmjzSNyBbWXa5T1ezZMQhodCSMPs1ZvSZwG8oHZa/9vJAKFXFsGCGknMPYvD6TLwxJ6VjDxWRUAIcuxUphxlOP8iucIau5to=
+    secure: tN4nSv3PMFY3UHAL/JFW5gKNPZRu5hIS7dRwgiGZacKFe/0CIPteSqmhV2Plq4LYplEKlitztH4dRROGLFIJuhUmGjY2SN3Xx3o8Dh33QjN8sOYnu282VrIdHxt+e3GLzqlxgIKy2LAGCk3ut0b9zpJpHhxLlqaBXmfE1gs5HlxB/zTLiPi5JJn/ynw3Y8478w0tDicafxy61yi69aw/uGM/MF3peyHEGJc6l7EElxx8t251zgSQ38z5bIGruz1mqAB23zgtXmatkZjznwbwo/C1k8+biDl+1enzAWlU2LkC9YWCKSkhBb0reW91mRTe9xK8L8g2QSoNEzFEm69FCw7CPEVyFk+D8Ce255+10V1tCFIUUoG4g7exB7NgF5DyTQP44hGHF9GArazmWe4hLdJ2lIKlNK0/Iz2D231SiOqjSLyLUVOdObkZMJHwTF9m7P465F7b9cVN04yskuY1a3anFJ89HOaua4Ans9KznsAM/AXt4+jjicMJVc32f7DaiUZh7VgTzrQ41Blh5r1uB5EUjjWnTJJrnEwB+5j4I35g7AphthDudlWYkp5iwK1a85iZ7D4kzFx+KZysmfDT2iuG+dbWS8IIsvGj7l/l/HZMb15vCC8ove1YTqEZsG8BkPse7MkVarcABlVSPA+tj2VTGhFRAeuB0EuoVN5ogPQ=
   file: $RELEASE_FILENAME
   skip_cleanup: true
   on:
