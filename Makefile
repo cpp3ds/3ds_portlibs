@@ -28,21 +28,21 @@ LIBOGG_VERSION       := $(LIBOGG)-1.3.2
 LIBOGG_SRC           := $(LIBOGG_VERSION).tar.xz
 LIBOGG_DOWNLOAD      := "http://downloads.xiph.org/releases/ogg/libogg-1.3.2.tar.xz"
 
-LIBVORBIS            := libvorbis
-LIBVORBIS_VERSION    := $(LIBVORBIS)-1.3.5
-LIBVORBIS_SRC        := $(LIBVORBIS_VERSION).tar.xz
-LIBVORBIS_DOWNLOAD   := "http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.5.tar.xz"
+TREMOR               := tremor
+TREMOR_GIT_CHECKOUT  := "tremolo"
+TREMOR_VERSION       := $(TREMOR)-$(TREMOR_GIT_VER)
+TREMOR_REPO          := "https://git.xiph.org/tremor.git"
 
-LIBFAAD2            := faad2
-LIBFAAD2_VERSION    := $(LIBFAAD2)-2.7
-LIBFAAD2_SRC        := $(LIBFAAD2_VERSION).tar.gz
-LIBFAAD2_DOWNLOAD   := "http://downloads.sourceforge.net/faac/faad2-2.7.tar.gz"
+LIBFAAD2             := faad2
+LIBFAAD2_VERSION     := $(LIBFAAD2)-2.7
+LIBFAAD2_SRC         := $(LIBFAAD2_VERSION).tar.gz
+LIBFAAD2_DOWNLOAD    := "http://downloads.sourceforge.net/faac/faad2-2.7.tar.gz"
 
 export PORTLIBS        := $(DEVKITPRO)/portlibs/3ds
 export PATH            := $(DEVKITARM)/bin:$(PATH)
 export PKG_CONFIG_PATH := $(PORTLIBS)/lib/pkgconfig
-export CFLAGS          := -march=armv6k -mtune=mpcore -mfloat-abi=hard -O2 \
-                          -mword-relocations -ffunction-sections -fdata-sections
+export CFLAGS          := -march=armv6k -mtune=mpcore -mfloat-abi=hard -O3 \
+                          -mword-relocations -ffunction-sections
 export CPPFLAGS        := -I$(PORTLIBS)/include
 export LDFLAGS         := -L$(PORTLIBS)/lib
 
@@ -53,7 +53,7 @@ export LDFLAGS         := -L$(PORTLIBS)/lib
 	$(ZLIB) \
 	$(LIBMAD) \
 	$(LIBOGG) \
-	$(LIBVORBIS) \
+	$(TREMOR) \
 	$(LIBFAAD2)
 
 all:
@@ -64,7 +64,7 @@ all:
 	@echo "  $(ZLIB)"
 	@echo "  $(LIBMAD)"
 	@echo "  $(LIBOGG)"
-	@echo "  $(LIBVORBIS) (requires libogg to be installed)"
+	@echo "  $(TREMOR) (requires libogg to be installed)"
 	@echo "  $(LIBFAAD2)"
 
 $(FREETYPE): $(FREETYPE_SRC)
@@ -77,7 +77,7 @@ $(LIBJPEGTURBO): $(LIBJPEGTURBO_SRC)
 	@[ -d $(LIBJPEGTURBO_VERSION) ] || tar -xaf $<
 	@cd $(LIBJPEGTURBO_VERSION) && \
 	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static
-	@$(MAKE) CFLAGS+="\"-Drandom()=rand()\"" -C $(LIBJPEGTURBO_VERSION)
+	@$(MAKE) -C $(LIBJPEGTURBO_VERSION)
 
 $(LIBPNG): $(LIBPNG_SRC)
 	@[ -d $(LIBPNG_VERSION) ] || tar -xaf $<
@@ -104,11 +104,12 @@ $(LIBOGG): $(LIBOGG_SRC)
 	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static
 	@$(MAKE) -C $(LIBOGG_VERSION)
 
-$(LIBVORBIS): $(LIBVORBIS_SRC)
-	@[ -d $(LIBVORBIS_VERSION) ] || tar -xaf $<
-	@cd $(LIBVORBIS_VERSION) && \
-	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static
-	@$(MAKE) -C $(LIBVORBIS_VERSION)
+$(TREMOR):
+	@[ -d $(TREMOR_VERSION) ] || git clone $(TREMOR_REPO) $(TREMOR_VERSION)
+	@cd $(TREMOR_VERSION) && \
+	 git pull && git checkout $(TREMOR_GIT_CHECKOUT) && \
+	 ./autogen.sh --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --disable-oggtest
+	@$(MAKE) -C $(TREMOR_VERSION)
 
 $(LIBFAAD2): $(LIBFAAD2_SRC)
 	@[ -d $(LIBFAAD2_VERSION) ] || tar -xaf $<
@@ -129,8 +130,6 @@ $(LIBMAD_SRC):
 	wget -O $@ $(LIBMAD_DOWNLOAD)
 $(LIBOGG_SRC):
 	wget -O $@ $(LIBOGG_DOWNLOAD)
-$(LIBVORBIS_SRC):
-	wget -O $@ $(LIBVORBIS_DOWNLOAD)
 $(LIBFAAD2_SRC):
 	wget -O $@ $(LIBFAAD2_DOWNLOAD)
 
@@ -143,7 +142,7 @@ install:
 	@[ ! -d $(LIBPNG_VERSION) ] || $(MAKE) -C $(LIBPNG_VERSION) install
 	@[ ! -d $(LIBMAD_VERSION) ] || $(MAKE) -C $(LIBMAD_VERSION) install
 	@[ ! -d $(LIBOGG_VERSION) ] || $(MAKE) -C $(LIBOGG_VERSION) install
-	@[ ! -d $(LIBVORBIS_VERSION) ] || $(MAKE) -C $(LIBVORBIS_VERSION) install
+	@[ ! -d $(TREMOR_VERSION) ] || $(MAKE) -C $(TREMOR_VERSION) install
 	@[ ! -d $(LIBFAAD2_VERSION) ] || $(MAKE) -C $(LIBFAAD2_VERSION) install
 
 clean:
@@ -153,5 +152,5 @@ clean:
 	@$(RM) -r $(ZLIB_VERSION)
 	@$(RM) -r $(LIBMAD_VERSION)
 	@$(RM) -r $(LIBOGG_VERSION)
-	@$(RM) -r $(LIBVORBIS_VERSION)
+	@$(RM) -r $(TREMOR_VERSION)
 	@$(RM) -r $(LIBFAAD2_VERSION)

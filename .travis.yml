@@ -19,8 +19,7 @@ script:
 - make libpng
 - make libjpeg-turbo
 - make libmad
-- make libvorbis
-- make faad2
+- make tremor
 - make install
 
 before_deploy:
