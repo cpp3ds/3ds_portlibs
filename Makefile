@@ -29,9 +29,9 @@ LIBOGG_SRC           := $(LIBOGG_VERSION).tar.xz
 LIBOGG_DOWNLOAD      := "http://downloads.xiph.org/releases/ogg/libogg-1.3.2.tar.xz"
 
 TREMOR               := tremor
-TREMOR_GIT_CHECKOUT  := "master"
-TREMOR_VERSION       := $(TREMOR)-$(TREMOR_GIT_CHECKOUT)
-TREMOR_REPO          := "https://git.xiph.org/tremor.git"
+TREMOR_VERSION       := $(TREMOR)-2a1a8f6
+TREMOR_SRC           := $(TREMOR_VERSION).tar.gz
+TREMOR_DOWNLOAD      := "https://git.xiph.org/?p=tremor.git;a=snapshot;h=2a1a8f621e500fdf0749f115e2206f82919560a3;sf=tgz"
 
 LIBFAAD2             := faad2
 LIBFAAD2_VERSION     := $(LIBFAAD2)-2.7
@@ -44,8 +44,8 @@ FMT_VERSION          := $(FMT)-$(FMT_GIT_CHECKOUT)
 FMT_REPO             := "https://github.com/fmtlib/fmt.git"
 
 export PORTLIBS        := $(DEVKITPRO)/portlibs/3ds
-export PATH            := $(DEVKITARM)/bin:$(PATH)
-export PKG_CONFIG_PATH := $(PORTLIBS)/lib/pkgconfig
+export PATH            := $(DEVKITARM)/bin:$(DEVKITPRO)/portlibs/3ds/bin:$(DEVKITPRO)/portlibs/armv6k/bin:$(PATH)
+export PKG_CONFIG      := $(PWD)/arm-none-eabi-pkg-config
 export CFLAGS          := -march=armv6k -mtune=mpcore -mfloat-abi=hard -O3 \
                           -mword-relocations -ffunction-sections
 export CPPFLAGS        := -I$(PORTLIBS)/include
@@ -111,10 +111,9 @@ $(LIBOGG): $(LIBOGG_SRC)
 	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static
 	@$(MAKE) -C $(LIBOGG_VERSION)
 
-$(TREMOR):
-	@[ -d $(TREMOR_VERSION) ] || git clone $(TREMOR_REPO) $(TREMOR_VERSION)
+$(TREMOR): $(TREMOR_SRC)
+	@[ -d $(TREMOR_VERSION) ] || tar -xaf $<
 	@cd $(TREMOR_VERSION) && \
-	 git pull && git checkout $(TREMOR_GIT_CHECKOUT) && \
 	 ./autogen.sh --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --disable-oggtest
 	@$(MAKE) -C $(TREMOR_VERSION)
 
@@ -145,6 +144,8 @@ $(LIBMAD_SRC):
 	wget -O $@ $(LIBMAD_DOWNLOAD)
 $(LIBOGG_SRC):
 	wget -O $@ $(LIBOGG_DOWNLOAD)
+$(TREMOR_SRC):
+	wget -O $@ $(TREMOR_DOWNLOAD)
 $(LIBFAAD2_SRC):
 	wget -O $@ $(LIBFAAD2_DOWNLOAD)
 
