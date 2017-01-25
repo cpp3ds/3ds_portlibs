@@ -20,6 +20,8 @@ script:
 - make libjpeg-turbo
 - make libmad
 - make tremor
+- make faad2
+- make fmt
 - make install
 
 before_deploy:

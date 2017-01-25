@@ -29,14 +29,19 @@ LIBOGG_SRC           := $(LIBOGG_VERSION).tar.xz
 LIBOGG_DOWNLOAD      := "http://downloads.xiph.org/releases/ogg/libogg-1.3.2.tar.xz"
 
 TREMOR               := tremor
-TREMOR_GIT_CHECKOUT  := "tremolo"
-TREMOR_VERSION       := $(TREMOR)-$(TREMOR_GIT_VER)
+TREMOR_GIT_CHECKOUT  := "master"
+TREMOR_VERSION       := $(TREMOR)-$(TREMOR_GIT_CHECKOUT)
 TREMOR_REPO          := "https://git.xiph.org/tremor.git"
 
 LIBFAAD2             := faad2
 LIBFAAD2_VERSION     := $(LIBFAAD2)-2.7
 LIBFAAD2_SRC         := $(LIBFAAD2_VERSION).tar.gz
 LIBFAAD2_DOWNLOAD    := "http://downloads.sourceforge.net/faac/faad2-2.7.tar.gz"
+
+FMT                  := fmt
+FMT_GIT_CHECKOUT     := "3.0.1"
+FMT_VERSION          := $(FMT)-$(FMT_GIT_CHECKOUT)
+FMT_REPO             := "https://github.com/fmtlib/fmt.git"
 
 export PORTLIBS        := $(DEVKITPRO)/portlibs/3ds
 export PATH            := $(DEVKITARM)/bin:$(PATH)
@@ -54,7 +59,8 @@ export LDFLAGS         := -L$(PORTLIBS)/lib
 	$(LIBMAD) \
 	$(LIBOGG) \
 	$(TREMOR) \
-	$(LIBFAAD2)
+	$(LIBFAAD2) \
+	$(FMT)
 
 all:
 	@echo "Please choose one of the following targets:"
@@ -66,6 +72,7 @@ all:
 	@echo "  $(LIBOGG)"
 	@echo "  $(TREMOR) (requires libogg to be installed)"
 	@echo "  $(LIBFAAD2)"
+	@echo "  $(FMT)"
 
 $(FREETYPE): $(FREETYPE_SRC)
 	@[ -d $(FREETYPE_VERSION) ] || tar -xaf $<
@@ -117,6 +124,14 @@ $(LIBFAAD2): $(LIBFAAD2_SRC)
 	 ./configure --prefix=$(PORTLIBS) --host=arm-none-eabi --disable-shared --enable-static
 	@$(MAKE) -C $(LIBFAAD2_VERSION)
 
+$(FMT):
+	@[ -d $(FMT_VERSION) ] || git clone $(FMT_REPO) $(FMT_VERSION)
+	@cd $(FMT_VERSION) && \
+	 git reset --hard $(FMT_GIT_CHECKOUT) && \
+	 patch -Np1 -i ../fmt.patch && \
+	 cmake -DCMAKE_BUILD_TYPE=None -DCMAKE_CXX_FLAGS="${CFLAGS}" -DCMAKE_TOOLCHAIN_FILE=../arm.cmake -DCMAKE_INSTALL_PREFIX=$(PORTLIBS) -DFMT_TEST=OFF .
+	@$(MAKE) -C $(FMT_VERSION) VERBOSE=1
+
 # Downloads
 $(ZLIB_SRC):
 	wget -O $@ $(ZLIB_DOWNLOAD)
@@ -144,6 +159,7 @@ install:
 	@[ ! -d $(LIBOGG_VERSION) ] || $(MAKE) -C $(LIBOGG_VERSION) install
 	@[ ! -d $(TREMOR_VERSION) ] || $(MAKE) -C $(TREMOR_VERSION) install
 	@[ ! -d $(LIBFAAD2_VERSION) ] || $(MAKE) -C $(LIBFAAD2_VERSION) install
+	@[ ! -d $(FMT_VERSION) ] || $(MAKE) -C $(FMT_VERSION) install
 
 clean:
 	@$(RM) -r $(FREETYPE_VERSION)
@@ -154,3 +170,4 @@ clean:
 	@$(RM) -r $(LIBOGG_VERSION)
 	@$(RM) -r $(TREMOR_VERSION)
 	@$(RM) -r $(LIBFAAD2_VERSION)
+	@$(RM) -r $(FMT_VERSION)
